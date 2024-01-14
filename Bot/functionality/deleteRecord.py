@@ -6,12 +6,14 @@ from functionality.search import *
 def patch(notion_key, payload, searchObj_toDelete):
     headers = {
         'Authorization': notion_key,
-        'Notion-Version': '2021-05-13',
+        'Notion-Version': '2022-06-28',
         'Content-Type': 'application/json'
     }
-    url = f"https://api.notion.com/v1/pages/{searchObj_toDelete.id}"
+    url = f"https://api.notion.com/v1/pages/{searchObj_toDelete.id}" # searchObj is the title.
     response = requests.request("PATCH", url, headers=headers, data=payload)
     print(response.content)
+
+# json.dumps() converts a series of python objects into json strings. Not all objects are convertible, so you need to make sure before.
 
 def deleteWithoutTag(searchObj_toDelete, api_key):
     payload = json.dumps({
@@ -78,3 +80,5 @@ def deleteAll(searchObj_toDelete, api_key):
         }
     })
     patch(api_key, payload, searchObj_toDelete)
+
+    # pathch function is used for deletion.

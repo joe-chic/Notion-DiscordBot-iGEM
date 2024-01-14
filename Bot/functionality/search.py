@@ -17,7 +17,7 @@ def getAllTitles(notion_db, notion_api):
     headers = {
         'Authorization': notion_api,
         'Content-Type': 'application/json',
-        'Notion-Version': '2021-08-16'
+        'Notion-Version': '2022-06-28'
     }
 
     payload = {

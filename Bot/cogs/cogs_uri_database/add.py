@@ -10,13 +10,17 @@ try:
 except:
     PREFIX = "*"
 
-
 class Add(commands.Cog):
     def __init__(self, client):
         self.bot = client
         self.guild_data = self.bot.guild_info
 
-    @commands.command(name="add", aliases=["a"])
+        # What is bot.guild_info?
+
+        # What is a message embed? An embed is a special way to display information, it is a type of message presentation that could be used for several purposes.
+        # They are really helpful when it comes to separating information and personalize its display.
+
+    @commands.command(name="add", aliases=["a"]) # In here the command was established.
     async def add(self, ctx, *args):
         if not checkIfGuildPresent(ctx.guild.id):
             embed = discord.Embed(
@@ -35,6 +39,9 @@ class Add(commands.Cog):
         client = self.guild_data[str(guild_id)]
 
         # check if args are empty
+
+        # What do you mean that args are empty?
+
         if len(args) == 0:
             # embed send
             embed = discord.Embed(
@@ -47,14 +54,42 @@ class Add(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        # get url
-        url = args[0]
+        
+        title = None
+        url = None
+        tag_shift = 0
+
+        if(validators.url(args[0])):
+            # get url
+            url = args[0]
+        else:
+            for i in range(1,len(args)):
+                if(validators.url(args[i])):
+                    url = args[i]
+                    title = ' '.join(args[0:i])
+                    tag_shift = i
+                    break   
+            
+            # this fundamentally changes the process of how the tags are extracted...
+
+        # It almost seems that args is a list with the response contents. The key to adding the title is to understand how args work.
+
         # check if url is valid
-        with ctx.channel.typing():
+                
+        name = ctx.author.nick if ctx.author.nick else ctx.author.name 
+
+        async with ctx.channel.typing():
             if checkURL(url):
                 # get title
-                title = getTitle(url)
-                # check if title is valid
+
+                if(title == None):
+                    title = getTitle(url)
+                
+                # getTitle(url) comes from the module functionality
+
+
+                # check if title is valid 
+                # <why do you need to check if title is valid?> If the <tag> title was not found, then the function soup.find() returns nothing.
                 if title:
                     # valid title received
                     # check if record already exists
@@ -72,7 +107,7 @@ class Add(commands.Cog):
                     # check if user has tag and contributor role
                 else:
                     # title not able to extract
-                    if doesItExist(url, client.notion_api_key, client.notion_db_id):
+                    if doesItExist(url, client.notion_api_key, client.notion_db_id): # Will this be different?
                         # record already exists
                         # embed send
                         embed = discord.Embed(
@@ -89,6 +124,8 @@ class Add(commands.Cog):
                     def check(m):
                         return m.author == ctx.author and m.channel == ctx.channel
 
+                        # This checks that the response was done by the same person who requested the command, and it was done in the same channel.
+
                     try:
                         msg = await self.bot.wait_for(
                             "message", check=check, timeout=60
@@ -99,18 +136,18 @@ class Add(commands.Cog):
                     # check if title is valid
                     if msg.content:
                         # valid title received
-                        title = msg.content
+                        title = msg.content # WHAT DO YOU MEAN? This is valid because the specific Title was just asked after notifying there is an invalidity.
                     else:
                         # invalid title
                         await ctx.send("Invalid title")
                         return
 
-                # add data
+                # add data <NEEDS TO BE MODIFIED>
                 try:
                     if client.tag:
                         # addData
-                        tags = getTags(args)
-                        author = "@" + str(ctx.author).split("#")[0]
+                        tags = getTags(args,tag_shift) #  HOW ARE TAGS IDENTIFIED?
+                        author = name.split("#")[0]
                         addAllData(
                             url,
                             client.notion_api_key,
@@ -119,9 +156,10 @@ class Add(commands.Cog):
                             tags,
                             title,
                         )
+
                     else:
                         # addData
-                        author = "@" + str(ctx.author).split("#")[0]
+                        author = name.split("#")[0]
                         addDataWithoutTag(
                             url,
                             client.notion_api_key,
@@ -156,5 +194,5 @@ class Add(commands.Cog):
                 await ctx.send(embed=embed)
 
 
-def setup(client):
-    client.add_cog(Add(client))
+async def setup(client):
+    await client.add_cog(Add(client))

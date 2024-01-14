@@ -35,14 +35,16 @@ def checkURL(url):
     return False
 
 
-def getTags(args):
-    url = args[0]
+def getTags(args,tag_shift):
+    
+    url = args[0+tag_shift]
+    
     # Tag provided
     final_tag = []
     list_of_tags = []
 
     # Multiple
-    for tag in args[1:]:
+    for tag in args[(tag_shift+1):]:
         # Adding the arguments to list_of_tags
         list_of_tags.append(tag)
         for tag in list_of_tags:
@@ -174,7 +176,7 @@ def getQueryForTitle(args):
     query = query.strip()
     return query
 
-
+# Why deserialize?
 def deserialize(data):
     obj = models.Clients(
         data["guild_id"],
@@ -232,7 +234,7 @@ def doesItExist(link, api_key, db_id):
     payload = json.dumps({"filter": {"property": "URL", "url": {"equals": link}}})
     headers = {
         "Authorization": api_key,
-        "Notion-Version": "2021-05-13",
+        "Notion-Version": "2022-06-28",
         "Content-Type": "application/json",
     }
     response = requests.post(url, headers=headers, data=payload)

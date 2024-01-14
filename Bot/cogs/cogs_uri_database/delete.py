@@ -66,7 +66,7 @@ async def delByTitle(ctx, query, client, bot):
         option_to_delete = int(msg.content)
         title = search_results[option_to_delete - 1].title
 
-        # check if contribuor turned on
+        # check if contributor turned on
         if client.tag:
             deleteAll(search_results[option_to_delete - 1], client.notion_api_key)
             # await ctx.send("Deleted all")
@@ -239,10 +239,24 @@ class Delete(commands.Cog):
             )
             await ctx.send(embed=embed)
             return
-        query = getQueryForTitle(args)
-        with ctx.channel.typing():
+        
+        query = getQueryForTitle(args) # Unites individual words into a string.
+
+        async with ctx.channel.typing():
             await delByTitle(ctx, query, client, self.bot)
 
 
-def setup(client):
-    client.add_cog(Delete(client))
+async def setup(client):
+    await client.add_cog(Delete(client))
+
+
+# General structure of this command:
+# getQueryForTitle() ---> Unites individual words into a string.
+# delByTitle() ---> searchByTitle(query.strip(), client.notion_db_id, client.notion_api_key) --->  titles = getAllTitles(notion_db, notion_api)
+# getAllTitles() uses getTitles() which returns a dictionary with all the content of all title rows.
+# title variable gets assigned to a value of that dictionary
+# obj from class SearchData() is made initialized with the contents of the dictionary.
+# a dictionary of objects is made and populated with objects from the latter class.
+# SearchData attribute has the attributes id, title and url.
+# pagination is requried ['next_cursor'], the next_cursor is required for continuing to add missing objects.
+# obj = SearchData(row["id"], title, row["properties"]["URL"]["url"])

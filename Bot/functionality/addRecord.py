@@ -104,7 +104,7 @@ def addDataWithoutTag(url, notion_api_key, notion_db_id, title, contributor):
 def sendData(payload, notion_api_key):
     headers = {
         'Authorization': notion_api_key,
-        'Notion-Version': '2021-05-13',
+        'Notion-Version': '2022-06-28',
         'Content-Type': 'application/json'
     }
 
