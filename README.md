@@ -63,7 +63,7 @@ https://www.notion.so/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX?v=YYYYYYYYYYYYYYYYYYYYYYY
 6. [Change Prefix](https://github.com/Servatom/Notion-DiscordBot#changing-prefix)
 
 ### Setup Bot:
-Run `*setup` command and enter notion api key (the one you got after creating integration) and notion database id. <br>
+On discord, run `*setup` command and enter notion api key (the one you got after creating integration) and notion database id. <br>
 
 <img src="https://assets.servatom.com/Notion-DiscordBot/setup.jpeg" width="60%"><br>
 
